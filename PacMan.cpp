@@ -31,8 +31,12 @@ int main()
 
 		//Display routine
 		COORD coord = { 0, 0 };
-		SetConsoleCursorPosition( //reset cursor at top-left corner
-			GetStdHandle(STD_OUTPUT_HANDLE), coord);
+		HANDLE consoleHandle = GetStdHandle(STD_OUTPUT_HANDLE);
+		SetConsoleCursorPosition(consoleHandle, coord);			//Set cursor position to (0,0)
+		CONSOLE_CURSOR_INFO cursorInfo;							//Next 4 lines set cursor visibility to FALSE
+		GetConsoleCursorInfo(consoleHandle, &cursorInfo);
+		cursorInfo.bVisible = FALSE;
+		SetConsoleCursorInfo(consoleHandle, &cursorInfo);
 
 		for (int row = 0; row < 20; row++) //draw 20x40 screen
 		{
