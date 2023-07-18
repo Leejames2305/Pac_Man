@@ -7,6 +7,8 @@ int main()
 {
     system("cls"); 		//clear console screen, start from empty
 	int x = 0, y = 0; 	//record player's position
+	int direction = 0; 	//record player's direction; 0 up, 1 left, 2 right, 3 down
+
 	for (;;)  			//infinite loop
 	{
 		if (_kbhit()) 	//Check key stroke
@@ -17,10 +19,10 @@ int main()
 				CharInput = _getch(); 			//get second key
 				switch (CharInput)
 				{
-				case 72: if (y > 0) y--; break; 	//up
-				case 75: if (x > 0) x--; break; 	//left
-				case 77: if (x < 39) x++; break; 	//right
-				case 80: if (y < 19) y++; break;	//down
+				case 72: if (y > 0) y--; direction = 0; break; 	//up
+				case 75: if (x > 0) x--; direction = 1; break; 	//left
+				case 77: if (x < 39) x++; direction = 2; break; //right
+				case 80: if (y < 19) y++; direction = 3; break;	//down
 				}
 			}
 			else if (CharInput == 27) //esc key quit, other no respond
@@ -44,9 +46,18 @@ int main()
 			for (int column = 0; column < 40; column++) 
 			{
 				if (row == y && column == x) //Print player position when matched
-					cout << 'X';
+				{	switch (direction)
+					{
+					case 0: cout << "^"; break;
+					case 1: cout << "<"; break;
+					case 2: cout << ">"; break;
+					case 3: cout << "v"; break;
+					}
+				}
 				else
+				{
 					cout << " ";  //Print space in non player position 
+				}
 			}
 			cout << endl;
 		}
