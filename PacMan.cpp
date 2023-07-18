@@ -45,8 +45,8 @@ int main()
 		{
 			for (int column = 0; column < 40; column++) 
 			{
-				if (row == y && column == x) //Print player position when matched
-				{	switch (direction)
+				if (row == y && column == x) //Print player when position matched
+				{	switch (direction)		 //Print player direction, 0 up, 1 left, 2 right, 3 down
 					{
 					case 0: cout << "^"; break;
 					case 1: cout << "<"; break;
