@@ -9,7 +9,7 @@ int main()
 	int x = 0, y = 0; 	//record player's position
 	for (;;)  			//infinite loop
 	{
-		if (_kbhit()) //Check key stroke
+		if (_kbhit()) 	//Check key stroke
 		{
 			unsigned char CharInput = _getch(); //arrow key is a 2-key combination, 244-72 for "up", this get first key
 			if (CharInput == 224) 				//confirm it is a 2-key combination
@@ -20,7 +20,7 @@ int main()
 				case 72: if (y > 0) y--; break; 	//up
 				case 75: if (x > 0) x--; break; 	//left
 				case 77: if (x < 39) x++; break; 	//right
-				case 80: if (y < 19) y++;        	//down
+				case 80: if (y < 19) y++; break;	//down
 				}
 			}
 			else if (CharInput == 27) //esc key quit, other no respond
@@ -32,6 +32,7 @@ int main()
 		//Display routine
 		COORD coord = { 0, 0 };
 		HANDLE consoleHandle = GetStdHandle(STD_OUTPUT_HANDLE);
+
 		SetConsoleCursorPosition(consoleHandle, coord);			//Set cursor position to (0,0)
 		CONSOLE_CURSOR_INFO cursorInfo;							//Next 4 lines set cursor visibility to FALSE
 		GetConsoleCursorInfo(consoleHandle, &cursorInfo);
@@ -42,15 +43,16 @@ int main()
 		{
 			for (int column = 0; column < 40; column++) 
 			{
-				if (row == y && column == x)
-					cout << "X";  //Print player if position match
+				if (row == y && column == x) //Print player position when matched
+					cout << 'X';
 				else
 					cout << " ";  //Print space in non player position 
 			}
 			cout << endl;
 		}
+		
 
 		//Speed control
-		Sleep(100);
+		Sleep(50);
 	}
 }
