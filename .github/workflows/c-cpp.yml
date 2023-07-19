@@ -6,7 +6,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
 
     steps:
     - name: Checkout Repository
@@ -16,7 +16,9 @@ jobs:
       run: sudo apt-get install g++  # Adjust for your compiler and dependencies
 
     - name: Build
-      run: g++ -o testbuild PacMan.cpp  # Adjust the build command as per your needs
+      run: |
+        choco install mingw -y
+        g++ -o testbuild PacMan.cpp  
 
     - name: Upload Artifacts
       uses: actions/upload-artifact@v2
