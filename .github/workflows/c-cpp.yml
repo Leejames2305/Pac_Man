@@ -12,9 +12,6 @@ jobs:
     - name: Checkout Repository
       uses: actions/checkout@v2
 
-    - name: Set up Compiler
-      run: sudo apt-get install g++  # Adjust for your compiler and dependencies
-
     - name: Build
       run: |
         choco install mingw -y
