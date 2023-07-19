@@ -21,4 +21,4 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: testbuild
-        path: testbuild  # Adjust if your binary has a different name
+        path: PacMan.exe  # Adjust if your binary has a different name
