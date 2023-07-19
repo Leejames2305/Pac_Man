@@ -1,0 +1,25 @@
+name: Build and Upload Artifacts
+on:
+  push:
+    branches:
+      - main  # Adjust the branch name if needed
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v2
+
+    - name: Set up Compiler
+      run: sudo apt-get install g++  # Adjust for your compiler and dependencies
+
+    - name: Build
+      run: g++ -o testbuild PacMan.cpp  # Adjust the build command as per your needs
+
+    - name: Upload Artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: testbuild
+        path: testbuild  # Adjust if your binary has a different name
