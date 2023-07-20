@@ -18,7 +18,7 @@ jobs:
         g++ -o testbuild PacMan.cpp  
 
     - name: Upload Artifacts
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: testbuild
         path: PacMan.exe  # Adjust if your binary has a different name
