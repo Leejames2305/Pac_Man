@@ -1,0 +1,24 @@
+name: Build and Upload Artifacts
+on:
+  push:
+    branches:
+      - main  # Adjust the branch name if needed
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v3
+
+    - name: Build
+      run: |
+        choco install mingw -y
+        g++ -o testbuild PacMan.cpp  
+
+    - name: Upload Artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: testbuild
+        path: PacMan.exe  # Adjust if your binary has a different name
