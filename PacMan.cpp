@@ -118,9 +118,13 @@ void runGame()
             	break;
             }
         }
-        else
+        else  //When key is not pressed, keep moving in the same direction
         {
-            direction = 0;
+			if (direction == 1 && y > 0) y--; 		// up momentum
+			else if (direction == 2 && x > 0) x--; 	// left momentum
+			else if (direction == 3 && x < 39) x++; // right momentum
+			else if (direction == 4 && y < 19) y++; // down momentum
+			else direction = 0; 					// stop momentum when hit wall
         }
 
         // Display routine
