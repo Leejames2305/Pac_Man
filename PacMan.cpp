@@ -13,19 +13,20 @@ const int ROWS = 20;    //Y-axis
 const int COLS = 40;    //X-axis
 
 // Custom struct to represent 2D coordinates
-struct dots_coordinates {
+struct dots_coordinates 
+{
     int dotsX;
     int dotsY;
     bool isDots;
 };
 
+dots_coordinates dots[COLS][ROWS];
 
 int main()
 {
     SetFontSize();
 	int main_menu_selection = 0;
 
-    dots_coordinates dots[COLS][ROWS];  // 2D array to store dots coordinates
     for (int i = 0; i < COLS; ++i)      // initialize dots coordinates
     {
         for (int j = 0; j < ROWS; ++j) 
@@ -115,8 +116,6 @@ void runGame()
     system("cls");                  // clear console screen, start from empty
     int x = 0, y = 0;               // record player's position
     int direction = 0;              // record player's direction; 1 up, 2 left, 3 right, 4 down            
-
-    dots_coordinates dots[COLS][ROWS]; 
     
     for (;;) // infinite loop
     {
@@ -182,6 +181,11 @@ void runGame()
                         cout << "v"; break;
                     }
                 }
+                else if (dots[column][row].isDots) 
+                {
+                    cout << "."; // Print dots in dots position
+                }
+                
                 else
                 {
                     cout << " "; // Print space in non-player position
