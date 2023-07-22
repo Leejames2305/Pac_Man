@@ -1,6 +1,7 @@
 #include <iostream>
 #include <conio.h>
 #include <windows.h>
+#include <vector>
 using namespace std;
 
 int main_menu(); // main menu function
@@ -8,10 +9,32 @@ void runGame();  // function to handle game logic and display
 void level_editor(); // function to handle level editor
 void SetFontSize();
 
+const int ROWS = 20;    //Y-axis
+const int COLS = 40;    //X-axis
+
+// Custom struct to represent 2D coordinates
+struct dots_coordinates {
+    int dotsX;
+    int dotsY;
+    bool isDots;
+};
+
+
 int main()
 {
     SetFontSize();
 	int main_menu_selection = 0;
+
+    dots_coordinates dots[COLS][ROWS];  // 2D array to store dots coordinates
+    for (int i = 0; i < COLS; ++i)      // initialize dots coordinates
+    {
+        for (int j = 0; j < ROWS; ++j) 
+        {
+            dots[i][j].dotsX = i;
+            dots[i][j].dotsY = j;
+            dots[i][j].isDots = true;
+        }
+    }
 
 	while (main_menu_selection != 3)			// keep showing main menu
 	{
@@ -91,8 +114,10 @@ void runGame()
 {
     system("cls");                  // clear console screen, start from empty
     int x = 0, y = 0;               // record player's position
-    int direction = 0;              // record player's direction; 1 up, 2 left, 3 right, 4 down
+    int direction = 0;              // record player's direction; 1 up, 2 left, 3 right, 4 down            
 
+    dots_coordinates dots[COLS][ROWS]; 
+    
     for (;;) // infinite loop
     {
         if (_kbhit()) // Check key stroke
@@ -137,9 +162,9 @@ void runGame()
         cursorInfo.bVisible = FALSE;
         SetConsoleCursorInfo(consoleHandle, &cursorInfo);
 
-        for (int row = 0; row < 20; row++) // draw 20x40 screen
+        for (int row = 0; row < ROWS; row++) // draw 20x40 screen
         {
-            for (int column = 0; column < 40; column++)
+            for (int column = 0; column < COLS; column++)
             {
                 if (row == y && column == x) // Print player when position matched
                 {
