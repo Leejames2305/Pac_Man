@@ -6,10 +6,12 @@ using namespace std;
 int main_menu(); // main menu function
 void runGame();  // function to handle game logic and display
 void level_editor(); // function to handle level editor
+void SetFontSize();
 
 int main()
 {
-    int main_menu_selection = 0;
+    SetFontSize();
+	int main_menu_selection = 0;
 
 	while (main_menu_selection != 3)			// keep showing main menu
 	{
@@ -33,10 +35,21 @@ int main()
     return 0;
 }
 
+void SetFontSize()  //Supposed can set font size to 18x18, but not working in my console, please use Ctrl + MouseWheel to change font size
+{
+	HANDLE consoleHandle = GetStdHandle(STD_OUTPUT_HANDLE);
+	PCONSOLE_FONT_INFOEX lpConsoleCurrentFontEx = new CONSOLE_FONT_INFOEX();
+	lpConsoleCurrentFontEx->cbSize = sizeof(CONSOLE_FONT_INFOEX);
+	GetCurrentConsoleFontEx(consoleHandle, 0, lpConsoleCurrentFontEx);
+	lpConsoleCurrentFontEx->dwFontSize.X = 18;
+	lpConsoleCurrentFontEx->dwFontSize.Y = 18;
+	SetCurrentConsoleFontEx(consoleHandle, 0, lpConsoleCurrentFontEx);
+}
+
 int main_menu()
 {
 	HANDLE consoleHandle = GetStdHandle(STD_OUTPUT_HANDLE);
-	CONSOLE_CURSOR_INFO cursorInfo;                 // Next 4 lines set cursor visibility to FALSE
+	CONSOLE_CURSOR_INFO cursorInfo;                 // Next 4 lines set cursor visibility to true
 	GetConsoleCursorInfo(consoleHandle, &cursorInfo);
 	cursorInfo.bVisible = true;
 	SetConsoleCursorInfo(consoleHandle, &cursorInfo);
@@ -69,7 +82,7 @@ int main_menu()
 	else
     {
         cout << "Invalid input, please try again" << endl;
-		Sleep(100);
+		Sleep(200);
 		return 0;
     }
 }
@@ -129,20 +142,15 @@ void runGame()
                     switch (direction) // Print player direction, 0 up, 1 left, 2 right, 3 down
                     {
                     case 0:
-                        cout << "X";
-                        break;
+                        cout << "X"; break;
                     case 1:
-                        cout << "^";
-                        break;
+                        cout << "^"; break;
                     case 2:
-                        cout << "<";
-                        break;
+                        cout << "<"; break;
                     case 3:
-                        cout << ">";
-                        break;
+                        cout << ">"; break;
                     case 4:
-                        cout << "v";
-                        break;
+                        cout << "v"; break;
                     }
                 }
                 else
