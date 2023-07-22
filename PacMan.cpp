@@ -5,25 +5,29 @@ using namespace std;
 
 int main_menu(); // main menu function
 void runGame();  // function to handle game logic and display
+void level_editor(); // function to handle level editor
 
 int main()
 {
-    system("cls");
-	int main_menu_selection = 0; // record main menu selection
+    int main_menu_selection = 0;
 
-    main_menu_selection = main_menu(); // call main menu function
-
-    if (main_menu_selection == 1) // if main menu selection is 1, start game
-    {
-        runGame(); // call the function to run the game
-    }
-    else if (main_menu_selection == 2) // if main menu selection is 2, level editor
-    {
-        cout << "Level editor" << endl;
-    }
-	else
+	while (main_menu_selection != 3)			// keep showing main menu
 	{
-		return main();
+		system("cls");
+		main_menu_selection = main_menu(); 		// call main menu function
+
+		if (main_menu_selection == 1) 			// if main menu selection is 1, start game
+		{
+			runGame(); 							// call the function to run the game
+		}
+		else if (main_menu_selection == 2) 		// if main menu selection is 2, level editor
+		{
+			level_editor(); 					// call the function to run the level editor
+		}
+		else if (main_menu_selection == 3) 		// if main menu selection is 3, exit
+		{
+			exit(0);
+		}
 	}
 
     return 0;
@@ -41,13 +45,12 @@ int main_menu()
 	cout << "PacMan" << endl;
     cout << "Press 1 to start" << endl;
     cout << "Press 2 for level editor" << endl;
-    cout << "Press 3 to exit" << endl;
+    cout << "Press 3/esc to exit" << endl;
 
     unsigned char CharInput;
-	cout << "Enter your choice: ";
-    cin >> CharInput;
+    CharInput = _getch(); 	// get key stroke
 
-    if (CharInput == 49) // 1 key
+    if (CharInput == 49) 	// 1 key
     {
         return 1;
     }
@@ -57,12 +60,17 @@ int main_menu()
     }
     else if (CharInput == 51) // 3 key
     {
-        exit(0);
+        return 3;
     }
-    else
+    else if (CharInput == 27) // esc key
+	{
+		return 3;
+	}
+	else
     {
         cout << "Invalid input, please try again" << endl;
-        return main_menu(); // Return the value returned by the recursive call.
+		Sleep(100);
+		return 0;
     }
 }
 
@@ -94,7 +102,7 @@ void runGame()
             }
             else if (CharInput == 27) // esc key quit, other no respond
             {
-            	main();
+            	break;
             }
         }
         else
@@ -148,4 +156,42 @@ void runGame()
         // Speed control
         Sleep(50);
     }
+}
+
+void level_editor()
+{
+	unsigned char level_editor_selection = 0;
+	
+	while (level_editor_selection != 51)
+	{
+		system("cls");
+		
+		cout << "Level editor" << endl;
+		cout << "Press 1 to create a new level" << endl;
+		cout << "Press 2 to edit an existing level" << endl;
+		cout << "Press 3/esc to return to main menu" << endl;
+		level_editor_selection = _getch();
+
+		if (level_editor_selection == 49)  // 1 key
+		{
+			// create new level
+		}
+		else if (level_editor_selection == 50)  // 2 key
+		{
+			// edit existing level
+		}
+		else if (level_editor_selection == 51)  // 3 key
+		{
+			break;
+		}
+		else if (level_editor_selection == 27)  // esc key
+		{
+			break;
+		}
+		else
+		{
+			cout << "Invalid input, please try again" << endl;
+			Sleep(200);
+		}
+	}
 }
