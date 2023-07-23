@@ -108,7 +108,7 @@ void runGame()
     system("cls");                  // clear console screen, start from empty
     int x = 0, y = 0;               // record player's position
     int direction = 0;              // record player's direction; 1 up, 2 left, 3 right, 4 down        
-    int score = -1;                 // record player's score, -1 so that it will be 0 when game start
+    int score = 0;                 // record player's score
     int timetaken = 0;              // record time taken
     
     for (int i = 0; i < COLS; ++i)      // initialize dots coordinates
@@ -120,16 +120,12 @@ void runGame()
             dots[i][j].isDots = true;
         }
     }
-    
+
+    // dots[12][15].isDots = true;         // debuging: set a single dots position
+
     for (;;) // infinite loop
     {
         bool isDotsLeft = false; // used to determine any dots left
-
-        if (dots[x][y].isDots == true)
-        {
-            dots[x][y].isDots = false; // remove dots when player pass through
-            score++;                    // add score when player pass through
-        }
 
         if (_kbhit()) // Check key stroke
         {
@@ -192,13 +188,18 @@ void runGame()
                     case 4:
                         cout << "v"; break;
                     }
+                    
+                    if (dots[x][y].isDots == true)  // Check if there is any dots in player position
+                    {
+                        dots[x][y].isDots = false; // remove dots when player pass through
+                        score++;                    // add score when player pass through
+                    }
                 }
                 else if (dots[column][row].isDots) 
                 {
                     cout << "."; // Print dots in dots position
                     isDotsLeft = true; // Set isDotsLeft to true if there is any dots left
                 }
-                
                 else
                 {
                     cout << " "; // Print space in non-player position
