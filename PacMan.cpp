@@ -115,12 +115,17 @@ void runGame()
 {
     system("cls");                  // clear console screen, start from empty
     int x = 0, y = 0;               // record player's position
-    int direction = 0;              // record player's direction; 1 up, 2 left, 3 right, 4 down            
+    int direction = 0;              // record player's direction; 1 up, 2 left, 3 right, 4 down        
+    int score = -1;                  // record player's score, -1 so that it will be 0 when game start
     
     for (;;) // infinite loop
     {
-        dots[x][y].isDots = false; // remove dots when player pass through
-        
+        if (dots[x][y].isDots == true)
+        {
+            dots[x][y].isDots = false; // remove dots when player pass through
+            score++;                    // add score when player pass through
+        }
+
         if (_kbhit()) // Check key stroke
         {
             unsigned char CharInput = _getch(); // arrow key is a 2-key combination, 244-72 for "up", this get first key
@@ -195,7 +200,7 @@ void runGame()
             }
             cout << endl;
         }
-
+        cout << "Score: " << score << endl;
         // Speed control
         Sleep(50);
     }
