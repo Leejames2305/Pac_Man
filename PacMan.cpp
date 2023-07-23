@@ -11,8 +11,8 @@ void runGame();  // function to handle game logic and display
 void level_editor(); // function to handle level editor
 void SetFontSize();
 
-const int ROWS = 20;    //Y-axis
 const int COLS = 40;    //X-axis
+const int ROWS = 20;    //Y-axis
 
 // Custom struct to represent 2D coordinates
 struct dots_coordinates 
@@ -65,11 +65,10 @@ void SetFontSize()  //Supposed can set font size to 18x18, but not working in my
 int main_menu()
 {
 	HANDLE consoleHandle = GetStdHandle(STD_OUTPUT_HANDLE);
-	CONSOLE_CURSOR_INFO cursorInfo;                 // Next 4 lines set cursor visibility to true
+	CONSOLE_CURSOR_INFO cursorInfo;                         // Next 4 lines set cursor visibility to true
 	GetConsoleCursorInfo(consoleHandle, &cursorInfo);
 	cursorInfo.bVisible = true;
 	SetConsoleCursorInfo(consoleHandle, &cursorInfo);
-	
 	
 	cout << "PacMan" << endl;
     cout << "Press 1 to start" << endl;
@@ -175,7 +174,7 @@ void runGame()
             {
                 if (row == y && column == x) // Print player when position matched
                 {
-                    switch (direction) // Print player direction, 0 up, 1 left, 2 right, 3 down
+                    switch (direction) // Print player direction, 1 up, 2 left, 3 right, 4 down
                     {
                     case 0:
                         cout << "X"; break;
@@ -195,7 +194,7 @@ void runGame()
                         score++;                    // add score when player pass through
                     }
                 }
-                else if (dots[column][row].isDots) 
+                else if (dots[column][row].isDots) // Print '.' if dots[coords][coords].isDots is true
                 {
                     cout << "."; // Print dots in dots position
                     isDotsLeft = true; // Set isDotsLeft to true if there is any dots left
