@@ -119,6 +119,8 @@ void runGame()
     
     for (;;) // infinite loop
     {
+        dots[x][y].isDots = false; // remove dots when player pass through
+        
         if (_kbhit()) // Check key stroke
         {
             unsigned char CharInput = _getch(); // arrow key is a 2-key combination, 244-72 for "up", this get first key
