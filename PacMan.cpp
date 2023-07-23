@@ -1,7 +1,9 @@
 #include <iostream>
+#include <iomanip>
 #include <conio.h>
 #include <windows.h>
 #include <vector>
+
 using namespace std;
 
 int main_menu(); // main menu function
@@ -26,16 +28,6 @@ int main()
 {
     SetFontSize();
 	int main_menu_selection = 0;
-
-    for (int i = 0; i < COLS; ++i)      // initialize dots coordinates
-    {
-        for (int j = 0; j < ROWS; ++j) 
-        {
-            dots[i][j].dotsX = i;
-            dots[i][j].dotsY = j;
-            dots[i][j].isDots = true;
-        }
-    }
 
 	while (main_menu_selection != 3)			// keep showing main menu
 	{
@@ -116,10 +108,22 @@ void runGame()
     system("cls");                  // clear console screen, start from empty
     int x = 0, y = 0;               // record player's position
     int direction = 0;              // record player's direction; 1 up, 2 left, 3 right, 4 down        
-    int score = -1;                  // record player's score, -1 so that it will be 0 when game start
+    int score = -1;                 // record player's score, -1 so that it will be 0 when game start
+    int timetaken = 0;              // record time taken
+    
+    for (int i = 0; i < COLS; ++i)      // initialize dots coordinates
+    {
+        for (int j = 0; j < ROWS; ++j) 
+        {
+            dots[i][j].dotsX = i;
+            dots[i][j].dotsY = j;
+            dots[i][j].isDots = true;
+        }
+    }
     
     for (;;) // infinite loop
     {
+        
         if (dots[x][y].isDots == true)
         {
             dots[x][y].isDots = false; // remove dots when player pass through
@@ -201,8 +205,9 @@ void runGame()
             cout << endl;
         }
         cout << "Score: " << score << endl;
-        // Speed control
-        Sleep(50);
+        cout << "Time taken: " << setw(4) << timetaken++ / 20 << "s" << endl;  //Speed is 50ms, there for 20 times = 1 second
+        cout << "Press esc to quit" << endl;
+        Sleep(50);  // Speed control
     }
 }
 
