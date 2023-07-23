@@ -123,7 +123,8 @@ void runGame()
     
     for (;;) // infinite loop
     {
-        
+        bool isDotsLeft = false; // used to determine any dots left
+
         if (dots[x][y].isDots == true)
         {
             dots[x][y].isDots = false; // remove dots when player pass through
@@ -195,6 +196,7 @@ void runGame()
                 else if (dots[column][row].isDots) 
                 {
                     cout << "."; // Print dots in dots position
+                    isDotsLeft = true; // Set isDotsLeft to true if there is any dots left
                 }
                 
                 else
@@ -208,6 +210,17 @@ void runGame()
         cout << "Time taken: " << setw(4) << timetaken++ / 20 << "s" << endl;  //Speed is 50ms, there for 20 times = 1 second
         cout << "Press esc to quit" << endl;
         Sleep(50);  // Speed control
+
+        if (isDotsLeft == false) // Check if there is any dots left
+        {
+            cout << endl;
+            cout << "You win!" << endl;
+            cout << "Score: " << score << endl;
+            cout << "Time taken: " << setw(4) << timetaken / 20 << "s" << endl;
+            cout << "Press any key to continue" << endl;
+            _getch();
+            break;
+        }
     }
 }
 
