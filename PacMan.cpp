@@ -26,7 +26,7 @@ dots_coordinates dots[COLS][ROWS];
 
 int main()
 {
-    SetFontSize();
+    // SetFontSize();
 	int main_menu_selection = 0;
 
 	while (main_menu_selection != 3)			// keep showing main menu
@@ -168,11 +168,11 @@ void runGame()
         cursorInfo.bVisible = FALSE;
         SetConsoleCursorInfo(consoleHandle, &cursorInfo);
 
-        for (int row = 0; row < ROWS; row++) // draw 20x40 screen
+        for (int row = 0; row < ROWS *2; row++) // draw 40x80 screen
         {
-            for (int column = 0; column < COLS; column++)
+            for (int column = 0; column < COLS *2; column++)
             {
-                if (row == y && column == x) // Print player when position matched
+                if ((row == y*2 || row == y*2+1) && (column == x*2 || column == x*2+1)) // Print 2X of player when position matched
                 {
                     switch (direction) // Print player direction, 1 up, 2 left, 3 right, 4 down
                     {
@@ -194,7 +194,7 @@ void runGame()
                         score++;                    // add score when player pass through
                     }
                 }
-                else if (dots[column][row].isDots) // Print '.' if dots[coords][coords].isDots is true
+                else if (dots[column/2][row/2].isDots) // Print '.' if dots[coords][coords].isDots is true
                 {
                     cout << "."; // Print dots in dots position
                     isDotsLeft = true; // Set isDotsLeft to true if there is any dots left
