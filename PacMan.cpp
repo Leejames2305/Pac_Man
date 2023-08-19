@@ -118,7 +118,19 @@ void runGame()
     int direction = 0;              // record player's direction; 1 up, 2 left, 3 right, 4 down        
     int score = 0;                 // record player's score
     int timetaken = 0;              // record time taken
+    int game_wall_coords [20][40] = { 0 }; // record wall coordinates, 0 = no wall, 1 = wall
+
+    ifstream infile;
+	infile.open(loaded_level(0, 0));
+	if (!infile)
+		infile.close(); //file error
     
+    int xx, yy;
+    while (infile >> xx >> yy)
+    {
+        game_wall_coords[yy][xx] = 1;
+    }
+
     for (int i = 0; i < COLS; ++i)      // initialize dots coordinates
     {
         for (int j = 0; j < ROWS; ++j) 
@@ -126,6 +138,8 @@ void runGame()
             dots[i][j].dotsX = i;
             dots[i][j].dotsY = j;
             dots[i][j].isDots = true;
+            if (game_wall_coords[j][i] == 1) // if wall, set isDots to false
+                dots[i][j].isDots = false;
         }
     }
 
@@ -144,13 +158,13 @@ void runGame()
                 switch (CharInput)
                 {
                 case 72:
-                    if (y > 0) y--; direction = 1; break; // up
+                    if (y > 0 && (game_wall_coords[y-1][x] != 1)) y--; direction = 1; break; // up
                 case 75:
-                    if (x > 0) x--; direction = 2; break; // left
+                    if (x > 0 && (game_wall_coords[y][x-1] != 1)) x--; direction = 2; break; // left
                 case 77:
-                    if (x < 39) x++; direction = 3; break; // right
+                    if (x < 39 && (game_wall_coords[y][x+1] != 1)) x++; direction = 3; break; // right
                 case 80:
-                    if (y < 19) y++; direction = 4; break; // down
+                    if (y < 19 && (game_wall_coords[y+1][x] != 1)) y++; direction = 4; break; // down
                 }
             }
             else if (CharInput == 27) // esc key quit, other no respond
@@ -160,10 +174,10 @@ void runGame()
         }
         else  //When key is not pressed, keep moving in the same direction
         {
-			if (direction == 1 && y > 0) y--; 		// up momentum
-			else if (direction == 2 && x > 0) x--; 	// left momentum
-			else if (direction == 3 && x < 39) x++; // right momentum
-			else if (direction == 4 && y < 19) y++; // down momentum
+			if (direction == 1 && y > 0 && (game_wall_coords[y-1][x] != 1)) y--; 		// up momentum
+			else if (direction == 2 && x > 0 && (game_wall_coords[y][x-1] != 1)) x--; 	// left momentum
+			else if (direction == 3 && x < 39 && (game_wall_coords[y][x+1] != 1)) x++; // right momentum
+			else if (direction == 4 && y < 19 && (game_wall_coords[y+1][x] != 1)) y++; // down momentum
 			else direction = 0; 					// stop momentum when hit wall
         }
 
@@ -203,6 +217,10 @@ void runGame()
                         score++;                    // add score when player pass through
                     }
                 }
+                else if (game_wall_coords[row/2][column/2] == 1)
+                {
+					cout << '#';
+                }
                 else if (dots[column/2][row/2].isDots) // Print '.' if dots[coords][coords].isDots is true
                 {
                     cout << "."; // Print dots in dots position
@@ -213,8 +231,12 @@ void runGame()
                     cout << " "; // Print space in non-player position
                 }
             }
+            cout << "#"; // Print right wall
             cout << endl;
         }
+        for (int lastrow = 0; lastrow < 80; lastrow++) //Print bottom wall
+            cout << "#";
+        cout << endl;
         cout << "Score: " << score << endl;
         cout << "Time taken: " << setw(4) << timetaken++ / 20 << "s" << endl;  //Speed is 50ms, there for 20 times = 1 second
         cout << "Press esc to quit" << endl;
@@ -425,12 +447,12 @@ string loaded_level(bool previous, bool next)  //Read all txt name, all of the t
         }
     }
     
-    if (previous == true)
+    if (previous == true)  //If previous is true, go to previous txt file
     {
         if (files_id != 0)  //Cannot go below 0
             files_id--;
     }
-    else if (next == true)
+    else if (next == true)  //If next is true, go to next txt file
     {
         if (files_id < txt_files.size() - 1)  //Cannot go above array size
             files_id++;
@@ -440,5 +462,5 @@ string loaded_level(bool previous, bool next)  //Read all txt name, all of the t
         return txt_files[files_id];
     }
 
-    return txt_files[files_id];
+    return txt_files[files_id];  //Return current txt file name
 }
