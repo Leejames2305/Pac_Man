@@ -245,6 +245,11 @@ void level_editor_menu()
 		cout << "Press 1 to create a new level" << endl;
 		cout << "Press 2 to edit an existing level" << endl;
 		cout << "Press 3/esc to return to main menu" << endl;
+        cout << endl;
+        cout << "Current level: " << loaded_level(0, 0) << endl;
+        cout << "Press a/d to change level" << endl;
+
+
 		level_editor_selection = _getch();
 
 		if (level_editor_selection == 49)  // 1 key
@@ -263,7 +268,15 @@ void level_editor_menu()
 		{
 			break;
 		}
-		else
+        else if (level_editor_selection == 97 || level_editor_selection == 65) // a key
+        {
+            loaded_level(1, 0);
+        }
+        else if (level_editor_selection == 100 || level_editor_selection == 68) // d key
+        {
+            loaded_level(0, 1);
+        }
+        else
 		{
 			cout << "Invalid input, please try again" << endl;
 			Sleep(200);
@@ -279,7 +292,7 @@ void level_editor()
 	int wall_coords [20][40] = { 0 }; //record wall coordinates, 0 = no wall, 1 = wall
 
 	ifstream infile;
-	infile.open("default.txt");
+	infile.open(loaded_level(0, 0));
 	if (!infile)
 		infile.close(); //file error
     
@@ -326,7 +339,7 @@ void level_editor()
 			else if (c == 27) //esc key
 			{
 				ofstream outfile;
-				outfile.open("default.txt");
+				outfile.open(loaded_level(0, 0));
 				if (!outfile)
 					outfile.close(); //file error
 
@@ -414,13 +427,13 @@ string loaded_level(bool previous, bool next)  //Read all txt name, all of the t
     
     if (previous == true)
     {
-        if (files_id != 0)
+        if (files_id != 0)  //Cannot go below 0
             files_id--;
     }
     else if (next == true)
     {
-    if (files_id < txt_files.size() - 1)
-        files_id++;
+        if (files_id < txt_files.size() - 1)  //Cannot go above array size
+            files_id++;
     }
     else
     {
