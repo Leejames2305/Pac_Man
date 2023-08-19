@@ -3,12 +3,15 @@
 #include <conio.h>
 #include <windows.h>
 #include <vector>
+#include <fstream>
 
 using namespace std;
 
 int main_menu(); // main menu function
 void runGame();  // function to handle game logic and display
+void level_editor_menu(); // function to handle level editor menu
 void level_editor(); // function to handle level editor
+void level_create(); // function to handle level creation
 void SetFontSize();
 
 const int COLS = 40;    //X-axis
@@ -26,7 +29,7 @@ dots_coordinates dots[COLS][ROWS];
 
 int main()
 {
-    // SetFontSize();
+    // SetFontSize();  //This will not be used
 	int main_menu_selection = 0;
 
 	while (main_menu_selection != 3)			// keep showing main menu
@@ -40,7 +43,7 @@ int main()
 		}
 		else if (main_menu_selection == 2) 		// if main menu selection is 2, level editor
 		{
-			level_editor(); 					// call the function to run the level editor
+			level_editor_menu(); 					// call the function to run the level editor
 		}
 		else if (main_menu_selection == 3) 		// if main menu selection is 3, exit
 		{
@@ -224,7 +227,7 @@ void runGame()
     }
 }
 
-void level_editor()
+void level_editor_menu()
 {
 	unsigned char level_editor_selection = 0;
 	
@@ -240,11 +243,11 @@ void level_editor()
 
 		if (level_editor_selection == 49)  // 1 key
 		{
-			// create new level
+			level_create();
 		}
 		else if (level_editor_selection == 50)  // 2 key
 		{
-			// edit existing level
+			level_editor();
 		}
 		else if (level_editor_selection == 51)  // 3 key
 		{
@@ -260,4 +263,105 @@ void level_editor()
 			Sleep(200);
 		}
 	}
+}
+
+void level_editor()
+{
+    system("cls"); 		//clear console screen, start from empty
+
+	int x = 0, y = 0; 	//record player's position
+	int wall_coords [20][40] = { 0 }; //record wall coordinates
+
+	ifstream infile;
+	infile.open("output.txt");
+	if (!infile)
+		infile.close(); //file error
+
+	// while (!infile.eof())
+	// {
+	// 	int xx, yy;
+	// 	infile >> xx >> yy;
+	// 	wall_coords[yy][xx] = { 1 };
+	// }
+
+	for (;;)
+	{
+		//Check key stroke
+		if (_kbhit())
+		{
+			//arrow key is a 2-key combination, 244-72 for "up"
+			unsigned char c = _getch(); //get first key
+			if (c == 224)
+			{
+				c = _getch(); //get second key
+				switch (c)
+				{
+				case 72: if (y > 0) y--; break; //up
+				case 75: if (x > 0) x--; break; //left
+				case 77: if (x < 39) x++; break; //right
+				case 80: if (y < 19) y++;        //down
+				}
+			}
+			else if (c == 99 || c == 67)
+			{
+				wall_coords[y][x] = 1; // When press C, coordinates of wall is recorded)
+				x++; // Move player to next position
+			} 
+			
+			else if (c == 27) //esc key
+			{
+				ofstream outfile;
+				outfile.open("output.txt");
+				if (!outfile)
+					outfile.close(); //file error
+
+				for (int r = 0; r < 20; r++)
+				{
+					for (int c = 0; c < 40; c++)
+					{
+						if (wall_coords[r][c] == 1)
+							outfile << c << " " << r << endl;
+					}
+				}
+                break;
+			}
+		}
+
+		//Display routine
+		COORD coord = { 0, 0 };
+		HANDLE consoleHandle = GetStdHandle(STD_OUTPUT_HANDLE);
+		
+		SetConsoleCursorPosition(consoleHandle, coord); // Set cursor position to (0,0)
+		CONSOLE_CURSOR_INFO cursorInfo;                 // Next 4 lines set cursor visibility to FALSE
+		GetConsoleCursorInfo(consoleHandle, &cursorInfo);
+	    cursorInfo.bVisible = FALSE;
+		SetConsoleCursorInfo(consoleHandle, &cursorInfo);
+
+		for (int r = 0; r < 20; r++)
+		{
+			for (int c = 0; c < 40; c++)
+			{
+				if (r == y && c == x)
+					cout << "X";
+				else if (r == 0 && c == 0)
+					cout << "P";
+				else if (r == 19 && c == 39)
+					cout << "G";
+				else if (wall_coords[r][c] == 1)
+					cout << '#';
+				else
+					cout << " ";
+			}
+
+			cout << endl;
+		}
+
+		//Speed control
+		Sleep(100);
+	}
+}
+
+void level_create()
+{
+
 }
