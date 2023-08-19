@@ -29,7 +29,6 @@ dots_coordinates dots[COLS][ROWS];
 
 int main()
 {
-    // SetFontSize();  //This will not be used
 	int main_menu_selection = 0;
 
 	while (main_menu_selection != 3)			// keep showing main menu
@@ -43,7 +42,7 @@ int main()
 		}
 		else if (main_menu_selection == 2) 		// if main menu selection is 2, level editor
 		{
-			level_editor_menu(); 					// call the function to run the level editor
+			level_editor_menu(); 				// call the function to run the level editor
 		}
 		else if (main_menu_selection == 3) 		// if main menu selection is 3, exit
 		{
@@ -52,17 +51,6 @@ int main()
 	}
 
     return 0;
-}
-
-void SetFontSize()  //Supposed can set font size to 18x18, but not working in my console, please use Ctrl + MouseWheel to change font size
-{
-	HANDLE consoleHandle = GetStdHandle(STD_OUTPUT_HANDLE);
-	PCONSOLE_FONT_INFOEX lpConsoleCurrentFontEx = new CONSOLE_FONT_INFOEX();
-	lpConsoleCurrentFontEx->cbSize = sizeof(CONSOLE_FONT_INFOEX);
-	GetCurrentConsoleFontEx(consoleHandle, 0, lpConsoleCurrentFontEx);
-	lpConsoleCurrentFontEx->dwFontSize.X = 18;
-	lpConsoleCurrentFontEx->dwFontSize.Y = 18;
-	SetCurrentConsoleFontEx(consoleHandle, 0, lpConsoleCurrentFontEx);
 }
 
 int main_menu()
@@ -273,7 +261,7 @@ void level_editor()
 	int wall_coords [20][40] = { 0 }; //record wall coordinates, 0 = no wall, 1 = wall
 
 	ifstream infile;
-	infile.open("output.txt");
+	infile.open("default.txt");
 	if (!infile)
 		infile.close(); //file error
     
@@ -320,7 +308,7 @@ void level_editor()
 			else if (c == 27) //esc key
 			{
 				ofstream outfile;
-				outfile.open("output.txt");
+				outfile.open("default.txt");
 				if (!outfile)
 					outfile.close(); //file error
 
