@@ -4,18 +4,23 @@
 #include <windows.h>
 #include <vector>
 #include <fstream>
+#include <string>
+#include <filesystem>  //This is to get list of files in directory
 
 using namespace std;
+namespace fs = std::filesystem;
 
 int main_menu(); // main menu function
 void runGame();  // function to handle game logic and display
 void level_editor_menu(); // function to handle level editor menu
 void level_editor(); // function to handle level editor
 void level_create(); // function to handle level creation
-void SetFontSize();
+string loaded_level(bool previous, bool next); // string to store level name
 
 const int COLS = 40;    //X-axis
 const int ROWS = 20;    //Y-axis
+
+int files_id = 0;
 
 // Custom struct to represent 2D coordinates
 struct dots_coordinates 
@@ -65,6 +70,9 @@ int main_menu()
     cout << "Press 1 to start" << endl;
     cout << "Press 2 for level editor" << endl;
     cout << "Press 3/esc to exit" << endl;
+    cout << endl;
+    cout << "Current level: " << loaded_level(0, 0) << endl;
+    cout << "Press a/d to change level" << endl;
 
     unsigned char CharInput;
     CharInput = _getch(); 	// get key stroke
@@ -85,7 +93,17 @@ int main_menu()
 	{
 		return 3;
 	}
-	else
+	else if (CharInput == 97 || CharInput == 65) // a key
+    {
+        loaded_level(1, 0);
+        return 0;
+    }
+    else if (CharInput == 100 || CharInput == 68) // d key
+    {
+        loaded_level(0, 1);
+        return 0;
+    }
+    else
     {
         cout << "Invalid input, please try again" << endl;
 		Sleep(200);
@@ -380,4 +398,34 @@ void level_create()
     cout << "Please proceed to level editor to edit the level" << endl;
     cout << "Press any key to continue" << endl;
     _getch();
+}
+
+string loaded_level(bool previous, bool next)  //Read all txt name, all of the txt will be level
+{
+    vector<string> txt_files;  // array to store 100 txt files' name
+
+    for (const auto & entry : fs::directory_iterator("."))  // get all txt files name in current directory
+    {
+        if (entry.path().extension() == ".txt")
+        {
+            txt_files.push_back(entry.path().filename().string());
+        }
+    }
+    
+    if (previous == true)
+    {
+        if (files_id != 0)
+            files_id--;
+    }
+    else if (next == true)
+    {
+    if (files_id < txt_files.size() - 1)
+        files_id++;
+    }
+    else
+    {
+        return txt_files[files_id];
+    }
+
+    return txt_files[files_id];
 }
