@@ -270,19 +270,18 @@ void level_editor()
     system("cls"); 		//clear console screen, start from empty
 
 	int x = 0, y = 0; 	//record player's position
-	int wall_coords [20][40] = { 0 }; //record wall coordinates
+	int wall_coords [20][40] = { 0 }; //record wall coordinates, 0 = no wall, 1 = wall
 
 	ifstream infile;
 	infile.open("output.txt");
 	if (!infile)
 		infile.close(); //file error
-
-	while (!infile.eof())
-	{
-		int xx, yy;
-		infile >> xx >> yy;
-		wall_coords[yy][xx] = 1;
-	}
+    
+    int xx, yy;
+    while (infile >> xx >> yy)
+    {
+        wall_coords[yy][xx] = 1;
+    }
 
 	for (;;)
 	{
@@ -302,12 +301,22 @@ void level_editor()
 				case 80: if (y < 19) y++;        //down
 				}
 			}
-			else if (c == 99 || c == 67)
+			else if (c == 99 || c == 67)  // When press C, coordinates of wall is recorded
 			{
-				wall_coords[y][x] = 1; // When press C, coordinates of wall is recorded)
-				x++; // Move player to next position
+                if ((x != 0 && y != 0) || (x != 39 && y != 19))  //P and G position cannot be a wall
+                    wall_coords[y][x] = 1; 
+				
+                if (x < 39)
+                    x++; // Move player to next position
 			} 
-			
+            else if (c == 120 || c == 88)  // When press X, coordinates of wall is removed
+			{
+                if ((x != 0 && y != 0) || (x != 39 && y != 19))  //P and G position cannot be a removed
+                    wall_coords[y][x] = 0; 
+				
+                if (x < 39)
+                    x++; // Move player to next position
+			} 
 			else if (c == 27) //esc key
 			{
 				ofstream outfile;
@@ -352,9 +361,15 @@ void level_editor()
 				else
 					cout << " ";
 			}
-
+            cout << "#";
 			cout << endl;
 		}
+        for (int lastrow = 0; lastrow < 40; lastrow++) //Print bottom wall
+            cout << "#";
+
+        cout << endl;
+        cout << "Press C to create wall, X to remove wall" << endl;
+        cout << "Press esc to save and return to level editor menu" << endl;
 
 		//Speed control
 		Sleep(100);
