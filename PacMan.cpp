@@ -238,7 +238,7 @@ void runGame()
             cout << "#";
         cout << endl;
         cout << "Score: " << score << endl;
-        cout << "Time taken: " << setw(4) << timetaken++ / 20 << "s" << endl;  //Speed is 50ms, there for 20 times = 1 second
+        cout << "Time taken: " << setw(4) << timetaken++ / 6 << "s" << endl;  //Speed is 50ms, therefor 20 rounds = 1 second; Currently set to 6 for debugging
         cout << "Press esc to quit" << endl;
         Sleep(50);  // Speed control
 
@@ -247,7 +247,7 @@ void runGame()
             cout << endl;
             cout << "You win!" << endl;
             cout << "Score: " << score << endl;
-            cout << "Time taken: " << setw(4) << timetaken / 20 << "s" << endl;
+            cout << "Time taken: " << setw(4) << timetaken / 6 << "s" << endl;
             cout << "Press any key to continue" << endl;
             _getch();
             break;
