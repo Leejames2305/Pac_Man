@@ -344,7 +344,7 @@ void level_editor()
 			}
 			else if (c == 99 || c == 67)  // When press C, coordinates of wall is recorded
 			{
-                if ((x != 0 && y != 0) || (x != 39 && y != 19))  //P and G position cannot be a wall
+                if ((x != 0 || y != 0) && (x != 39 || y != 19))  //P and G position cannot be a wall
                     wall_coords[y][x] = 1; 
 				
                 if (x < 39)
@@ -352,7 +352,7 @@ void level_editor()
 			} 
             else if (c == 120 || c == 88)  // When press X, coordinates of wall is removed
 			{
-                if ((x != 0 && y != 0) || (x != 39 && y != 19))  //P and G position cannot be a removed
+                if ((x != 0 || y != 0) && (x != 39 || y != 19))  // P and G position cannot be a removed
                     wall_coords[y][x] = 0; 
 				
                 if (x < 39)
