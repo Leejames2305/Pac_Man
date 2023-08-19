@@ -277,12 +277,12 @@ void level_editor()
 	if (!infile)
 		infile.close(); //file error
 
-	// while (!infile.eof())
-	// {
-	// 	int xx, yy;
-	// 	infile >> xx >> yy;
-	// 	wall_coords[yy][xx] = { 1 };
-	// }
+	while (!infile.eof())
+	{
+		int xx, yy;
+		infile >> xx >> yy;
+		wall_coords[yy][xx] = 1;
+	}
 
 	for (;;)
 	{
@@ -363,5 +363,18 @@ void level_editor()
 
 void level_create()
 {
+    string custom_level_name;
+    system("cls"); 		//clear console screen, start from empty
+    cout << "Please enter level name: ";
+    cin >> custom_level_name;
+    
+    ofstream outfile;
+    outfile.open(custom_level_name + ".txt");
+    if (!outfile)
+        outfile.close(); //file error
 
+    cout << "Successfully created level: " << custom_level_name << endl;
+    cout << "Please proceed to level editor to edit the level" << endl;
+    cout << "Press any key to continue" << endl;
+    _getch();
 }
