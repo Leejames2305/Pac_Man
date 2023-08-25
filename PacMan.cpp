@@ -5,51 +5,68 @@
 #include <vector>
 #include <fstream>
 #include <string>
+#include <algorithm>   //This is to sort the scores
 #include <filesystem>  //This is to get list of files in directory
 
 using namespace std;
 namespace fs = std::filesystem;
 
-int main_menu(); // main menu function
-void runGame();  // function to handle game logic and display
-void level_editor_menu(); // function to handle level editor menu
-void level_editor(); // function to handle level editor
-void level_create(); // function to handle level creation
-string loaded_level(bool previous, bool next); // string to store level name
-
 const int COLS = 40;    //X-axis
 const int ROWS = 20;    //Y-axis
 
-int files_id = 0;
+struct Score 
+{
+    int score;
+    int timeTaken;
+    Score(int scr, int time) : score(scr), timeTaken(time) {}
+};
 
-// Custom struct to represent 2D coordinates
 struct dots_coordinates 
 {
     int dotsX;
     int dotsY;
     bool isDots;
 };
-
 dots_coordinates dots[COLS][ROWS];
+
+int main_menu();                                         // main menu function
+void runGame(int* pScore, int* pGlobalTime);             // function to handle game logic and display
+void level_editor_menu();                                // function to handle level editor menu
+void level_editor();                                     // function to handle level editor
+void level_create();                                     // function to handle level creation
+void displayScoreboard(const vector<Score> &get_scores); // function to handle scoreboard
+string loaded_level(bool previous, bool next);           // string to store level name
+
+int files_id = 0;
+int globaltime = 0;
 
 int main()
 {
 	int main_menu_selection = 0;
+    int score = 0;
 
-	while (main_menu_selection != 3)			// keep showing main menu
+    vector<Score> get_scores = { Score(150, 10) };          // Default scores, 150 points in 10 seconds
+
+	while (main_menu_selection != 3)			            // keep showing main menu
 	{
 		system("cls");
-		main_menu_selection = main_menu(); 		// call main menu function
+		main_menu_selection = main_menu(); 		            // call main menu function
 
-		if (main_menu_selection == 1) 			// if main menu selection is 1, start game
+		if (main_menu_selection == 1) 			            // if main menu selection is 1, start game
 		{
-			runGame(); 							// call the function to run the game
-		}
-		else if (main_menu_selection == 2) 		// if main menu selection is 2, level editor
+			runGame(&score, &globaltime);                   // call the function to run the game
+            get_scores.push_back(Score(score, globaltime)); // Add score to vector
+            displayScoreboard(get_scores);                  // Display scoreboard
+        }
+		else if (main_menu_selection == 2) 		            // if main menu selection is 2, level editor
 		{
-			level_editor_menu(); 				// call the function to run the level editor
+			level_editor_menu(); 				            // call the function to run the level editor
 		}
-		else if (main_menu_selection == 3) 		// if main menu selection is 3, exit
+        else if (main_menu_selection == 3) 		            // if main menu selection is 4, scoreboard
+        {
+            displayScoreboard(get_scores); 				    // call the function to run the scoreboard
+        }
+        else if (main_menu_selection == 4) 		            // if main menu selection is 3, exit
 		{
 			exit(0);
 		}
@@ -69,7 +86,8 @@ int main_menu()
 	cout << "PacMan" << endl;
     cout << "Press 1 to start" << endl;
     cout << "Press 2 for level editor" << endl;
-    cout << "Press 3/esc to exit" << endl;
+    cout << "Press 3 for ScoreBoard" << endl;
+    cout << "Press 4/esc to exit" << endl;
     cout << endl;
     cout << "Current level: " << loaded_level(0, 0) << endl;
     cout << "Press a/d to change level" << endl;
@@ -88,6 +106,10 @@ int main_menu()
     else if (CharInput == 51) // 3 key
     {
         return 3;
+    }
+    else if (CharInput == 52) // 4 key
+    {
+        return 4;
     }
     else if (CharInput == 27) // esc key
 	{
@@ -111,14 +133,14 @@ int main_menu()
     }
 }
 
-void runGame()
+void runGame(int* pScore, int* pGlobalTime)
 {
-    system("cls");                  // clear console screen, start from empty
-    int x = 0, y = 0;               // record player's position
-    int direction = 0;              // record player's direction; 1 up, 2 left, 3 right, 4 down        
-    int score = 0;                 // record player's score
-    int timetaken = 0;              // record time taken
-    int game_wall_coords [20][40] = { 0 }; // record wall coordinates, 0 = no wall, 1 = wall
+    system("cls");                          // clear console screen, start from empty
+    int x = 0, y = 0;                       // record player's position
+    int direction = 0;                      // record player's direction; 1 up, 2 left, 3 right, 4 down        
+    int score = 0;                          // record player's score
+    int timetaken = 0;                      // record time taken
+    int game_wall_coords [20][40] = { 0 };  // record wall coordinates, 0 = no wall, 1 = wall
 
     ifstream infile;
 	infile.open(loaded_level(0, 0));
@@ -142,8 +164,6 @@ void runGame()
                 dots[i][j].isDots = false;
         }
     }
-
-    // dots[12][15].isDots = true;         // debuging: set a single dots position
 
     for (;;) // infinite loop
     {
@@ -249,10 +269,17 @@ void runGame()
             cout << "Score: " << score << endl;
             cout << "Time taken: " << setw(4) << timetaken / 6 << "s" << endl;
             cout << "Press any key to continue" << endl;
+            
+            globaltime = timetaken/6;
+            
             _getch();
             break;
         }
     }
+    globaltime = timetaken/6;
+
+    *pScore = score;
+    *pGlobalTime = globaltime;
 }
 
 void level_editor_menu()
@@ -437,7 +464,7 @@ void level_create()
 
 string loaded_level(bool previous, bool next)  //Read all txt name, all of the txt will be level
 {
-    vector<string> txt_files;  // array to store 100 txt files' name
+    vector<string> txt_files;
 
     for (const auto & entry : fs::directory_iterator("."))  // get all txt files name in current directory
     {
@@ -454,7 +481,7 @@ string loaded_level(bool previous, bool next)  //Read all txt name, all of the t
     }
     else if (next == true)  //If next is true, go to next txt file
     {
-        if (files_id < txt_files.size() - 1)  //Cannot go above array size
+        if (files_id < txt_files.size() - 1)  //Cannot go above txt_files.size()
             files_id++;
     }
     else
@@ -463,4 +490,37 @@ string loaded_level(bool previous, bool next)  //Read all txt name, all of the t
     }
 
     return txt_files[files_id];  //Return current txt file name
+}
+
+bool compareScores(const Score& s1, const Score& s2)
+{
+    if (s1.score != s2.score)
+    {
+        return s1.score > s2.score;  // Sorting in descending order
+    }
+
+    else
+    {
+        return s1.timeTaken < s2.timeTaken; // If scores are equal, compare times in ascending order
+    }
+}
+
+void displayScoreboard(const vector<Score> &get_scores) 
+{
+    vector<Score> scoreboard = get_scores; // Copy the scores
+
+    sort(scoreboard.begin(), scoreboard.end(), compareScores);
+    system("cls");
+    cout << "Scoreboard" << endl;
+    cout << " " << endl;
+    cout << "Rank " << "\tScore" << "\tTime taken" << endl;
+
+    for (size_t i = 0; i < scoreboard.size(); ++i) {
+        const Score& entry = scoreboard[i];
+
+        cout << i + 1 <<"\t"<< entry.score <<"\t"<< entry.timeTaken << "s" << endl;
+    }
+    cout << "Press any key to continue" << endl;
+
+    _getch();
 }
