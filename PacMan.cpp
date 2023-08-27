@@ -7,6 +7,7 @@
 #include <string>
 #include <algorithm>   //This is to sort the scores
 #include <filesystem>  //This is to get list of files in directory
+#include <cmath>       //This is to calculate distance between player and ghost
 
 using namespace std;
 namespace fs = std::filesystem;
@@ -29,6 +30,12 @@ struct dots_coordinates
 };
 dots_coordinates dots[COLS][ROWS];
 
+struct ghost_coordinates
+{
+    bool is_wall;
+};
+ghost_coordinates ghost[COLS][ROWS];
+
 int main_menu();                                         // main menu function
 void runGame(int* pScore, int* pGlobalTime);             // function to handle game logic and display
 void level_editor_menu();                                // function to handle level editor menu
@@ -37,6 +44,7 @@ void level_create();                                     // function to handle l
 bool compareScores(const Score& s1, const Score& s2);    // function to compare scores
 void displayScoreboard(const vector<Score> &get_scores); // function to handle scoreboard
 string loaded_level(bool previous, bool next);           // string to store level name
+void ghost_movement(int x, int y, int& g_x, int& g_y);   // function to handle ghost movement
 
 int files_id = 0;
 int globaltime = 0;
@@ -142,6 +150,7 @@ void runGame(int* pScore, int* pGlobalTime)
     int score = 0;                          // record player's score
     int timetaken = 0;                      // record time taken
     int game_wall_coords [20][40] = { 0 };  // record wall coordinates, 0 = no wall, 1 = wall
+    int g_x = 39, g_y = 19;                 // record ghost's position
 
     ifstream infile;
 	infile.open(loaded_level(0, 0));
@@ -154,7 +163,7 @@ void runGame(int* pScore, int* pGlobalTime)
         game_wall_coords[yy][xx] = 1;
     }
 
-    for (int i = 0; i < COLS; ++i)      // initialize dots coordinates
+    for (int i = 0; i < COLS; ++i)      // initialize dots coordinates, and ghost walls
     {
         for (int j = 0; j < ROWS; ++j) 
         {
@@ -162,13 +171,25 @@ void runGame(int* pScore, int* pGlobalTime)
             dots[i][j].dotsY = j;
             dots[i][j].isDots = true;
             if (game_wall_coords[j][i] == 1) // if wall, set isDots to false
+            {
                 dots[i][j].isDots = false;
+                ghost[i][j].is_wall = true;
+            }
+            else
+            {
+				ghost[i][j].is_wall = false;
+			}
         }
     }
 
-    for (;;) // infinite loop
+    for (int count = 0; true; count++) // infinite loop, with count running
     {
         bool isDotsLeft = false; // used to determine any dots left
+
+        if (count % 2 == 0)
+        {
+            ghost_movement(x, y, g_x, g_y);  // call the function to move the ghost
+        }
 
         if (_kbhit()) // Check key stroke
         {
@@ -238,6 +259,10 @@ void runGame(int* pScore, int* pGlobalTime)
                         score++;                    // add score when player pass through
                     }
                 }
+                else if ((row == g_y * 2 || row == g_y * 2 + 1) && (column == g_x * 2 || column == g_x * 2 + 1)) // Print 2X of ghost when position matched
+                {
+                    cout << "G"; // Print ghost in ghost position
+                }
                 else if (game_wall_coords[row/2][column/2] == 1)
                 {
 					cout << '#';
@@ -273,6 +298,19 @@ void runGame(int* pScore, int* pGlobalTime)
             
             globaltime = timetaken/6;
             
+            _getch();
+            break;
+        }
+        else if (x == g_x && y == g_y) // Check if player position is same as ghost position
+        {
+            cout << endl;
+            cout << "You lose!" << endl;
+            cout << "Score: " << score << endl;
+            cout << "Time taken: " << setw(4) << timetaken / 6 << "s" << endl;
+            cout << "Press any key to continue" << endl;
+
+            globaltime = timetaken/6;
+
             _getch();
             break;
         }
@@ -451,6 +489,9 @@ void level_create()
     system("cls"); 		//clear console screen, start from empty
     cout << "Please enter level name: ";
     cin >> custom_level_name;
+
+    if (custom_level_name == "0")
+        return;
     
     ofstream outfile;
     outfile.open(custom_level_name + ".txt");
@@ -524,4 +565,111 @@ void displayScoreboard(const vector<Score> &get_scores)
     cout << "Press any key to continue" << endl;
 
     _getch();
+}
+
+void ghost_movement(int x, int y, int& g_x, int& g_y)
+{
+
+    bool right=0, left=0, down=0, up=0;
+
+    int r_distance = pow(abs(g_x + 1 - x), 2) + pow(abs(g_y - y), 2);
+    int l_distance = pow(abs(g_x - 1 - x), 2) + pow(abs(g_y - y), 2);
+    int d_distance = pow(abs(g_x - x), 2) + pow(abs(g_y + 1 - y), 2);
+    int u_distance = pow(abs(g_x - x), 2) + pow(abs(g_y - 1 - y), 2);
+    int distance[4] = { r_distance,l_distance,d_distance,u_distance};
+    //int shortest_path = distance[0];
+
+    for (int i = 0; i < 4; i++)
+    {
+        for (int j = (i + 1); j < 4; j++)
+        {
+            if (distance[i] >= distance[j])
+            {
+                int temp = distance[i];
+                distance[i] = distance[j];
+                distance[j] = temp;
+            }
+        }
+    }
+
+    if (distance[0] == u_distance && ghost[g_x][g_y - 1].is_wall == 0) //prioritise up and down
+    {
+        g_y--;
+
+    }
+    else if (distance[0] == d_distance && ghost[g_x][g_y + 1].is_wall == 0)
+    {
+        g_y++;
+
+    }
+    else if (distance[0] == r_distance && ghost[g_x + 1][g_y].is_wall == 0)
+    {
+        g_x++;
+
+    }
+    else if (distance[0] == l_distance && ghost[g_x - 1][g_y].is_wall == 0)
+    {
+        g_x--;
+
+    }
+    else if (distance[1] == u_distance && ghost[g_x][g_y - 1].is_wall == 0)
+    {
+        g_y--;
+
+    }
+    else if (distance[1] == d_distance && ghost[g_x][g_y + 1].is_wall == 0)
+    {
+        g_y++;
+
+    }
+    else if (distance[1] == r_distance && ghost[g_x + 1][g_y].is_wall == 0)
+    {
+        g_x++;
+
+    }
+    else if (distance[1] == l_distance && ghost[g_x - 1][g_y].is_wall == 0)
+    {
+        g_x--;
+
+    }
+    else if (distance[2] == u_distance && ghost[g_x][g_y - 1].is_wall == 0)
+    {
+        g_y--;
+
+    }
+    else if (distance[2] == d_distance && ghost[g_x][g_y + 1].is_wall == 0)
+    {
+        g_y++;
+
+    }
+    else if (distance[2] == r_distance && ghost[g_x + 1][g_y].is_wall == 0)
+    {
+        g_x++;
+
+    }
+    else if (distance[2] == l_distance && ghost[g_x - 1][g_y].is_wall == 0)
+    {
+        g_x--;
+
+    }
+    else if (distance[3] == u_distance && ghost[g_x][g_y - 1].is_wall == 0)
+    {
+        g_y--;
+
+    }
+    else if (distance[3] == d_distance && ghost[g_x][g_y + 1].is_wall == 0)
+    {
+        g_y++;
+
+    }
+    else if (distance[3] == r_distance && ghost[g_x + 1][g_y].is_wall == 0)
+    {
+        g_x++;
+
+    }
+    else if (distance[3] == l_distance && ghost[g_x - 1][g_y].is_wall == 0)
+    {
+        g_x--;
+
+    }
 }
