@@ -34,6 +34,7 @@ void runGame(int* pScore, int* pGlobalTime);             // function to handle g
 void level_editor_menu();                                // function to handle level editor menu
 void level_editor();                                     // function to handle level editor
 void level_create();                                     // function to handle level creation
+bool compareScores(const Score& s1, const Score& s2);    // function to compare scores
 void displayScoreboard(const vector<Score> &get_scores); // function to handle scoreboard
 string loaded_level(bool previous, bool next);           // string to store level name
 
@@ -62,11 +63,11 @@ int main()
 		{
 			level_editor_menu(); 				            // call the function to run the level editor
 		}
-        else if (main_menu_selection == 3) 		            // if main menu selection is 4, scoreboard
+        else if (main_menu_selection == 3) 		            // if main menu selection is 3, scoreboard
         {
             displayScoreboard(get_scores); 				    // call the function to run the scoreboard
         }
-        else if (main_menu_selection == 4) 		            // if main menu selection is 3, exit
+        else if (main_menu_selection == 4) 		            // if main menu selection is 4, exit
 		{
 			exit(0);
 		}
@@ -113,7 +114,7 @@ int main_menu()
     }
     else if (CharInput == 27) // esc key
 	{
-		return 3;
+		return 4;
 	}
 	else if (CharInput == 97 || CharInput == 65) // a key
     {
