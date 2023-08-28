@@ -1,6 +1,6 @@
 # Pac_Man in CPP.
 This is a university assignment. 
-This code can only be compiled based on C++ standard >= 17 because of <filesystem> being used.
+This code can only be compiled based on C++ standard >= 17 because of filesystem being used.
 
 Files should be run in the way shown below:
 
