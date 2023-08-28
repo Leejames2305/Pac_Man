@@ -1,11 +1,16 @@
 /*
-This is a PacMan game created by:
+Title: PacMan in CPP
+Date: 2023-08-31
+Version: v0.5
+Developer:
 1. Lee Xin Yi; 2103307; MH; 2103307@1utar.my    (Lead developer)
 2. 
 3.
 4.
 5.
 
+© 2023 Lee Xin Yi. All rights reserved. 
+https://github.com/Leejames2305/Pac_Man
 */
 
 #include <iostream>
@@ -587,8 +592,8 @@ void ghost_movement(int x, int y, int& g_x, int& g_y)
     int d_distance = pow(abs(g_x - x), 2) + pow(abs(g_y + 1 - y), 2);
     int u_distance = pow(abs(g_x - x), 2) + pow(abs(g_y - 1 - y), 2);
     int distance[4] = { r_distance,l_distance,d_distance,u_distance};
-    //int shortest_path = distance[0];
 
+    // Sort the distances of the ghost from the player in ascending order in array, 1st being shortest
     for (int i = 0; i < 4; i++)
     {
         for (int j = (i + 1); j < 4; j++)
@@ -602,27 +607,27 @@ void ghost_movement(int x, int y, int& g_x, int& g_y)
         }
     }
 
-    if (distance[0] == u_distance && ghost[g_x][g_y - 1].is_wall == 0) //prioritise up and down
+    if (distance[0] == u_distance && ghost[g_x][g_y - 1].is_wall == 0) //prioritise up and down, Ghost move up if u_distance is the shortest, and there is no wall above
     {
         g_y--;
 
     }
-    else if (distance[0] == d_distance && ghost[g_x][g_y + 1].is_wall == 0)
+    else if (distance[0] == d_distance && ghost[g_x][g_y + 1].is_wall == 0)  //Ghost move down if d_distance is the shortest & there is no wall below 
     {
         g_y++;
 
     }
-    else if (distance[0] == r_distance && ghost[g_x + 1][g_y].is_wall == 0)
+    else if (distance[0] == r_distance && ghost[g_x + 1][g_y].is_wall == 0)  //Ghost move right if r_distance is the shortest there is no wall on the right
     {
         g_x++;
 
     }
-    else if (distance[0] == l_distance && ghost[g_x - 1][g_y].is_wall == 0)
+    else if (distance[0] == l_distance && ghost[g_x - 1][g_y].is_wall == 0)  //Ghost move left if l_distance is the shortest & there is no wall on the left
     {
         g_x--;
 
     }
-    else if (distance[1] == u_distance && ghost[g_x][g_y - 1].is_wall == 0)
+    else if (distance[1] == u_distance && ghost[g_x][g_y - 1].is_wall == 0)  //If shortest distance is unavailable, move to the next shortest distance, repeat for all 4 directions
     {
         g_y--;
 
