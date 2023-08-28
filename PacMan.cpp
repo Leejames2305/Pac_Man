@@ -1,3 +1,13 @@
+/*
+This is a PacMan game created by:
+1. Lee Xin Yi; 2103307; MH; 2103307@1utar.my    (Lead developer)
+2. 
+3.
+4.
+5.
+
+*/
+
 #include <iostream>
 #include <iomanip>
 #include <conio.h>
